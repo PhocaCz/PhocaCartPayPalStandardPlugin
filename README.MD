@@ -1,0 +1,1 @@
+PhocaCartPayPalStandardPlugin is Joomla! CMS extension.  Plugin - payment method for Phoca Cart component.
