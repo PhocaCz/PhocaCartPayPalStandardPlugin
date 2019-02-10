@@ -1,81 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="pcp" method="upgrade" version="3">
 	<name>plg_pcp_paypal_standard</name>
-	<creationDate>10/02/2016</creationDate>
 	<author>Jan Pavelka (www.phoca.cz)</author>
+	<creationDate>10/02/2019</creationDate>
 	<authorEmail></authorEmail>
-	<authorUrl>www.phoca.cz</authorUrl>
+	<authorUrl>https://www.phoca.cz</authorUrl>
 	<copyright>Jan Pavelka</copyright>
 	<license>GNU/GPL</license>
-	<version>3.0.0</version>
-
-	
+	<version>3.1.7</version>
 	<description>PLG_PCP_PAYPAL_STANDARD_DESCRIPTION</description>
+	<projectName>PhocaCartPayPalStandardPlugin</projectName>
 
-	
 	<files>
-		<filename plugin="paypal_standard">paypal_standard.php</filename>
-		<filename plugin="paypal_standard">paypal_standard.xml</filename>
-		<filename plugin="paypal_standard">index.html</filename>
 		<folder>helpers</folder>
+		<filename plugin="paypal_standard">index.html</filename>
+		<filename plugin="paypal_standard">paypal_standard.php</filename>
 	</files>
 
-	
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_pcp_paypal_standard.ini</language>
 		<language tag="en-GB">language/en-GB/en-GB.plg_pcp_paypal_standard.sys.ini</language>
 	</languages>
+
 	<administration>
 		<languages>
 			<language tag="en-GB">language/en-GB/en-GB.plg_pcp_paypal_standard.ini</language>
 			<language tag="en-GB">language/en-GB/en-GB.plg_pcp_paypal_standard.sys.ini</language>
 		</languages>
 	</administration>
-	
-	
-
-<form>
+	<form>
 	<fields name="params" addfieldpath="/administrator/components/com_phocacart/models/fields">
-	<fieldset name="payment" addpath="/administrator/components/com_phocacart/models/fields" group="pcp" >
+	<fieldset name="payment" addpath="/administrator/components/com_phocacart/models/fields" group="pcp">
 
 
-<field name="merchant_email" type="text" class="inputbox" size="40" label="PLG_PCP_PAYPAL_STANDARD_FIELD_MERCHANT_EMAIL_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_MERCHANT_EMAIL_DESC" required="true" />
+<field name="merchant_email" type="text" class="inputbox" size="40" label="PLG_PCP_PAYPAL_STANDARD_FIELD_MERCHANT_EMAIL_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_MERCHANT_EMAIL_DESC" required="true"/>
 
 <field name="sandbox" type="list" label="PLG_PCP_PAYPAL_STANDARD_FIELD_SANDBOX_MODE_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_SANDBOX_MODE_DESC" default="0">
 	<option value="1">PLG_PCP_PAYPAL_STANDARD_YES</option>
-	<option	value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
+	<option value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
 </field>
 
 <field name="verify_ssl" type="list" label="PLG_PCP_PAYPAL_STANDARD_FIELD_VERIFY_SSL_CERTIFICATE_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_VERIFY_SSL_CERTIFICATE_DESC" default="1">
 	<option value="1">PLG_PCP_PAYPAL_STANDARD_YES</option>
-	<option	value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
+	<option value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
 </field>
 
 <field name="address_override" type="list" label="PLG_PCP_PAYPAL_STANDARD_FIELD_ADDRESS_OVERRIDE_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_ADDRESS_OVERRIDE_DESC" default="0">
 	<option value="1">PLG_PCP_PAYPAL_STANDARD_YES</option>
-	<option	value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
+	<option value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
 </field>
 
 
-<field name="status_Canceled_Reversal" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_CANCELED_REVERSAL_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Canceled_Reversal" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_CANCELED_REVERSAL_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Completed" type="PhocaCartOrderStatus" default="6" label="PLG_PCP_PAYPAL_STANDARD_FIELD_COMPLETED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Completed" type="PhocaCartOrderStatus" default="6" label="PLG_PCP_PAYPAL_STANDARD_FIELD_COMPLETED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Denied" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_DENIED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Denied" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_DENIED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Expired" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_EXPIRED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Expired" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_EXPIRED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Failed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_FAILED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Failed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_FAILED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Pending" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_PENDING_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Pending" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_PENDING_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Processed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_PROCESSED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Processed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_PROCESSED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Refunded" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_REFUNDED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Refunded" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_REFUNDED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Reversed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_REVERSED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Reversed" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_REVERSED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
-<field name="status_Voided" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_VOIDED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"  />
+<field name="status_Voided" type="PhocaCartOrderStatus" default="3" label="PLG_PCP_PAYPAL_STANDARD_FIELD_VOIDED_STATUS_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_COMMON_STATUS_DESC"/>
 
 
 
@@ -84,4 +78,9 @@
 	</fields>
 
 </form>
+	
+
+	<updateservers>
+		<server type="extension" name="PLG_PCP_PAYPAL_STANDARD" priority="1"><![CDATA[https://raw.githubusercontent.com/PhocaCz/PhocaCartPayPalStandardPlugin/master/manifest.xml]]></server>
+	</updateservers>
 </extension>

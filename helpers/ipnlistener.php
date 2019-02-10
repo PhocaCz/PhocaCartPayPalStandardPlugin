@@ -12,12 +12,18 @@
  *  @copyright  (c) 2012 - Micah Carrick
  *  @version    2.1.0
  */
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 //jimport('joomla.log.log');
 //JLog::addLogger( array('text_file' => 'com_phocacart_error_log.php'), JLog::ALL, array('com_phocacart'));
+
+
+if (! class_exists('PhocacartLoader')) {
+    require_once( JPATH_ADMINISTRATOR.'/components/com_phocacart/libraries/loader.php');
+}
+
 phocacartimport('phocacart.utils.log');
 
-class PhocaCartPaypalStandardIpnListener {
+class PhocacartPaypalStandardIpnListener {
     
     /**
      *  If true, the recommended cURL PHP library is used to send the post back 
@@ -135,7 +141,7 @@ class PhocaCartPaypalStandardIpnListener {
             $errstr = curl_error($ch);
 			
 			//JLog::add('Paypal Standard: '."cURL error: [$errno] $errstr", JLog::WARNING, 'com_phocacart');
-			PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "cURL error: [$errno] $errstr");
+			PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "cURL error: [$errno] $errstr");
             throw new Exception("cURL error: [$errno] $errstr");
         }
     }
@@ -167,7 +173,7 @@ class PhocaCartPaypalStandardIpnListener {
         if (!$fp) { 
             // fsockopen error
 			//JLog::add('Paypal Standard: '."fsockopen error: [$errno] $errstr", JLog::WARNING, 'com_phocacart');
-			PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "fsockopen error: [$errno] $errstr");
+			PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "fsockopen error: [$errno] $errstr");
             throw new Exception("fsockopen error: [$errno] $errstr");
         } 
 
@@ -287,12 +293,12 @@ class PhocaCartPaypalStandardIpnListener {
         
         if ($post_data === null) { 
             // use raw POST data 
-            if (!empty($_POST)) {
-                $this->post_data = $_POST;
+            if (!empty($_POST)) {// FOR JED CHECKERS: POST IS NEEDED HERE
+                $this->post_data = $_POST;// FOR JED CHECKERS: POST IS NEEDED HERE
                 $encoded_data .= '&'.file_get_contents('php://input');
             } else {
 				//JLog::add('Paypal Standard: '."No POST data found.", JLog::WARNING, 'com_phocacart');
-				PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "No POST data found.");
+				PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "No POST data found.");
                 throw new Exception("No POST data found.");
             }
         } else { 
@@ -309,7 +315,7 @@ class PhocaCartPaypalStandardIpnListener {
         
         if (strpos($this->response_status, '200') === false) {
 			//JLog::add('Paypal Standard: '."Invalid response status: ".$this->response_status, JLog::WARNING, 'com_phocacart');
-			PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Invalid response status: ".$this->response_status);
+			PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Invalid response status: ".$this->response_status);
             throw new Exception("Invalid response status: ".$this->response_status);
         }
         
@@ -319,7 +325,7 @@ class PhocaCartPaypalStandardIpnListener {
             return false;
         } else {
 			//JLog::add('Paypal Standard: '."Unexpected response from PayPal.", 'com_phocacart');
-			PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Unexpected response from PayPal.");
+			PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Unexpected response from PayPal.");
             throw new Exception("Unexpected response from PayPal.");
         }
     }
@@ -334,7 +340,7 @@ class PhocaCartPaypalStandardIpnListener {
         // require POST requests
         if ($_SERVER['REQUEST_METHOD'] && $_SERVER['REQUEST_METHOD'] != 'POST') {
 			//JLog::add('Paypal Standard: '."Invalid HTTP request method.", 'com_phocacart');
-			//PhocaCartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Invalid HTTP request method.");
+			//PhocacartLog::add(1, 'Payment - PayPal Standard - ERROR', 0, "Invalid HTTP request method.");
             header('Allow: POST', true, 405);
             throw new Exception("Invalid HTTP request method.");
         }

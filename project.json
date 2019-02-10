@@ -1,0 +1,19 @@
+{
+	"author": "Jan Pavelka (www.phoca.cz)",
+	"authorUrl": "https://www.phoca.cz",
+	"copyright": "Jan Pavelka",
+	"license": "GNU/GPL",
+	"projectName": "PhocaCartPayPalStandardPlugin",
+	"extensionName": "Phoca Cart PayPal Standard Plugin",
+	"projectInitials" : "PC",				  
+	"description": "Phoca Cart Payment - PayPal Standard - payment method for Phoca Cart component. This plugin is included in core Phoca Cart package.",
+	"projectUrl": "https://www.phoca.cz/phocacart-extensions/2-plugins/5-payment-paypal-standard",
+	"projectDocumentationUrl": "https://www.phoca.cz/documentation/category/115-phoca-cart",
+	"projectMainComponent": "Phoca Cart",
+	"projectMainComponentInfoUrl": "https://www.phoca.cz/project/phocacart-joomla-ecommerce",
+	"projectDemo" : {
+		"Joomla! - Phoca Cart Demo": "https://www.phoca.cz/phocacartdemo/",
+		"Joomla! - Phoca Cart - Phoca Premiere Template Demo": "https://www.phoca.cz/phocacartdemo/premiere/"
+	},
+	"projectColor": "#129ed9"
+}
