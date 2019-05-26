@@ -5,10 +5,10 @@
 		<element>paypal_standard</element>
 		<folder>pcp</folder>
 		<type>plugin</type>
-		<version>3.1.9</version>
-		<infourl title="Phoca Cart PayPal Standard Plugin 3.1.9">https://www.phoca.cz/</infourl>
+		<version>3.2.0</version>
+		<infourl title="Phoca Cart PayPal Standard Plugin 3.2.0">https://www.phoca.cz/</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/releases/download/3.1.9/plg_pcp_paypal_standard_v3.1.9.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/releases/download/3.2.0/plg_pcp_paypal_standard_v3.2.0.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>
