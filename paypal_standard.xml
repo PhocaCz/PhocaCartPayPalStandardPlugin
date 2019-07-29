@@ -2,12 +2,12 @@
 <extension type="plugin" group="pcp" method="upgrade" version="3">
 	<name>plg_pcp_paypal_standard</name>
 	<author>Jan Pavelka (www.phoca.cz)</author>
-	<creationDate>26/05/2019</creationDate>
+	<creationDate>29/07/2019</creationDate>
 	<authorEmail></authorEmail>
 	<authorUrl>https://www.phoca.cz</authorUrl>
 	<copyright>Jan Pavelka</copyright>
 	<license>GNU/GPL</license>
-	<version>3.2.0</version>
+	<version>3.3.0</version>
 	<description>PLG_PCP_PAYPAL_STANDARD_DESCRIPTION</description>
 	<projectName>PhocaCartPayPalStandardPlugin</projectName>
 
