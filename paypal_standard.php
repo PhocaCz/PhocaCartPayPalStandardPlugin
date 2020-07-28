@@ -95,6 +95,7 @@ class plgPCPPaypal_Standard extends JPlugin
 		$sandbox 				= $params->get('sandbox', 0);
 		$merchant_email			= $params->get('merchant_email', '');
 		$address_override		= $params->get('address_override', '');
+		$country_type			= $params->get('country_type', 1);
 
 		$paramsC 				= PhocacartUtils::getComponentParameters();
 		$rounding_calculation	= $paramsC->get( 'rounding_calculation', 1 );
@@ -304,7 +305,14 @@ class plgPCPPaypal_Standard extends JPlugin
 		$f[]	= '<input type="hidden" name="address2" value="'.$b['address_2'].'" />';
 		$f[]	= '<input type="hidden" name="city" value="'.$b['city'].'" />';
 		$f[]	= '<input type="hidden" name="zip" value="'.$b['zip'].'" />';
-		$f[]	= '<input type="hidden" name="country" value="'.$b['countrytitle'].'" />';
+		
+		
+		if ($country_type == 2) {
+			$f[]	= '<input type="hidden" name="country" value="'.$b['countrycode'].'" />';
+		} else {
+			$f[]	= '<input type="hidden" name="country" value="'.$b['countrytitle'].'" />';
+		}
+
 		$f[]	= '<input type="hidden" name="email" value="'.$b['email'].'" />';//$b->email_contact
 
 		$f[]	= '<input type="hidden" name="address_override" value="'.(int)$address_override.'" />';
@@ -419,7 +427,6 @@ class plgPCPPaypal_Standard extends JPlugin
 				if (isset($o['common']->payment_id) && (int)$o['common']->payment_id > 0) {
 					$paymentO = $payment->getPaymentMethod((int)$o['common']->payment_id );
 					// Order - check if the payment method set in Order is the same like this plugin
-
 					if (isset($paymentO->method)) {
 						$paramsPayment	= $paymentO->params;
 						$statusOption 	= $paramsPayment->get('status_'.$paymentStatus, 0);
@@ -460,7 +467,6 @@ class plgPCPPaypal_Standard extends JPlugin
 							}
 
 							// Attention Refunded and Reversed have negative amount
-
 							$mcGrossCompare = $mcGross;
 							if ($paymentStatus == 'Refunded' || $paymentStatus == 'Reversed') {
 								$mcGrossCompare = abs($mcGross);

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" group="pcp" method="upgrade" version="3">
+<extension type="plugin" group="pcp" method="upgrade" version="3.9">
 	<name>plg_pcp_paypal_standard</name>
 	<author>Jan Pavelka (www.phoca.cz)</author>
-	<creationDate>13/04/2020</creationDate>
+	<creationDate>28/07/2020</creationDate>
 	<authorEmail></authorEmail>
 	<authorUrl>https://www.phoca.cz</authorUrl>
 	<copyright>Jan Pavelka</copyright>
 	<license>GNU/GPL</license>
-	<version>3.5.0</version>
+	<version>3.5.3</version>
 	<description>PLG_PCP_PAYPAL_STANDARD_DESCRIPTION</description>
 	<projectName>PhocaCartPayPalStandardPlugin</projectName>
 
@@ -48,6 +48,11 @@
 <field name="address_override" type="list" label="PLG_PCP_PAYPAL_STANDARD_FIELD_ADDRESS_OVERRIDE_LABEL" description="PLG_PCP_PAYPAL_STANDARD_FIELD_ADDRESS_OVERRIDE_DESC" default="0">
 	<option value="1">PLG_PCP_PAYPAL_STANDARD_YES</option>
 	<option value="0">PLG_PCP_PAYPAL_STANDARD_NO</option>
+</field>
+
+<field name="country_type" type="list" label="PLG_PCP_PAYPAL_STANDARD_COUNTRY_FIELD_TYPE_LABEL" description="PLG_PCP_PAYPAL_STANDARD_COUNTRY_FIELD_TYPE_DESC" default="1">
+	<option value="1">PLG_PCP_PAYPAL_STANDARD_COUNTRY_TITLE</option>
+	<option value="2">PLG_PCP_PAYPAL_STANDARD_COUNTRY_CODE</option>
 </field>
 
 
