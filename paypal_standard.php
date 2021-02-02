@@ -19,6 +19,8 @@ JLoader::registerPrefix('Phocacart', JPATH_ADMINISTRATOR . '/components/com_phoc
 
 class plgPCPPaypal_Standard extends JPlugin
 {
+	protected $name 	= 'paypal_standard';
+	
 	function __construct(& $subject, $config) {
 
 		parent :: __construct($subject, $config);
@@ -34,7 +36,11 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * @return  boolean  True
 	 */
 
-	function PCPbeforeProceedToPayment(&$proceed, &$message) {
+	function PCPbeforeProceedToPayment(&$proceed, &$message, $eventData) {
+		
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
 
 		// THERE ARE 3 PLACES WHERE THE MESSAGE CAN BE CREATED:
 		// 1) COMPONENT - components/com_phocacart/views/info/tmpl/ ...
@@ -71,7 +77,11 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * @return  boolean  True
 	 */
 
-	function PCPafterCancelPayment($mid, &$message){
+	function PCPafterCancelPayment($mid, &$message, $eventData){
+		
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
 
 		$message = array();
 		/*
@@ -89,7 +99,11 @@ class plgPCPPaypal_Standard extends JPlugin
 		return true;
 	}
 
-	function PCPbeforeSetPaymentForm(&$form, $paramsC, $params, $order) {
+	function PCPbeforeSetPaymentForm(&$form, $paramsC, $params, $order, $eventData) {
+		
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
 
 		$document				= JFactory::getDocument();
 		$sandbox 				= $params->get('sandbox', 0);
@@ -305,8 +319,8 @@ class plgPCPPaypal_Standard extends JPlugin
 		$f[]	= '<input type="hidden" name="address2" value="'.$b['address_2'].'" />';
 		$f[]	= '<input type="hidden" name="city" value="'.$b['city'].'" />';
 		$f[]	= '<input type="hidden" name="zip" value="'.$b['zip'].'" />';
-		
-		
+
+
 		if ($country_type == 2) {
 			$f[]	= '<input type="hidden" name="country" value="'.$b['countrycode'].'" />';
 		} else {
@@ -365,7 +379,11 @@ class plgPCPPaypal_Standard extends JPlugin
 
 	}
 
-	function PCPbeforeCheckPayment($pid) {
+	function PCPbeforeCheckPayment($pid, $eventData) {
+		
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
 
 
 		if (! class_exists('PhocacartPaypalStandardIpnListener')) {

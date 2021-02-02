@@ -2,7 +2,7 @@
 
 
 
-![Phoca Cart PayPal Standard Plugin](https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/blob/master/paypal_standard.png)
+![Phoca Cart PayPal Standard Plugin](https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/blob/master/paypal_standard.png?raw=true)
 
 # Phoca Cart PayPal Standard Plugin
 
@@ -56,7 +56,7 @@ Phoca Cart Payment - PayPal Standard - payment method for Phoca Cart component. 
 
 ## Version
 
-3.5.4
+3.5.5
 
 
 
