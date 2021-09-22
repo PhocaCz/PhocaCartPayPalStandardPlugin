@@ -20,7 +20,7 @@ JLoader::registerPrefix('Phocacart', JPATH_ADMINISTRATOR . '/components/com_phoc
 class plgPCPPaypal_Standard extends JPlugin
 {
 	protected $name 	= 'paypal_standard';
-	
+
 	function __construct(& $subject, $config) {
 
 		parent :: __construct($subject, $config);
@@ -37,7 +37,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 */
 
 	function PCPbeforeProceedToPayment(&$proceed, &$message, $eventData) {
-		
+
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
 		}
@@ -78,7 +78,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 */
 
 	function PCPafterCancelPayment($mid, &$message, $eventData){
-		
+
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
 		}
@@ -96,11 +96,13 @@ class plgPCPPaypal_Standard extends JPlugin
 			break;
 		}
 		*/
+
+
 		return true;
 	}
 
 	function PCPbeforeSetPaymentForm(&$form, $paramsC, $params, $order, $eventData) {
-		
+
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
 		}
@@ -161,7 +163,7 @@ class plgPCPPaypal_Standard extends JPlugin
 			$paymentId = 0;
 		}
 
-		$return 		= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentrecieve';
+		$return 		= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentrecieve&type=paypal_standard&mid=1';
 		$cancel_return 	= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentcancel&type=paypal_standard&mid=1';
 		$notify_url 	= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentnotify&type=paypal_standard&pid='.(int)$paymentId.'&tmpl=component';
 		//$payment_action = '';
@@ -380,7 +382,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	}
 
 	function PCPbeforeCheckPayment($pid, $eventData) {
-		
+
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
 		}
@@ -532,7 +534,7 @@ class plgPCPPaypal_Standard extends JPlugin
 								// 1) First change the status in database
 								//    and create invoice in case invoice is created by status change
 								if (PhocacartOrderStatus::changeStatusInOrderTable((int)$id, (int)$statusOption)) {
-									PhocacartLog::add(1, 'Payment - PayPal Standard - Order Status Change', (int)$id, 'Order status changed to: '.$statusOption);
+									PhocacartLog::add(1, 'Payment - PayPal Standard - Order Status Change', (int)$id, 'Order status changed to: '.$statusOption . '('.$paymentStatus.')');
 								}
 
 								// 2) Change the status including sending emails
@@ -584,5 +586,102 @@ class plgPCPPaypal_Standard extends JPlugin
 
 		exit(0);
 	}
+
+	/* The payment method plugin can decide whether or not to empty the cart when an order is placed.
+	 * For example, if the payment gateway returns information about a failed payment,
+	 * the cart can remain filled and the customer can try to make the payment again.
+	 * However, if the payment method plugin decides not to delete the items in the cart,
+	 * then it must use other events to ensure that the cart is deleted. For example, on a successful payment.
+	 *
+	 * To empty cart:
+	 *
+	 *  $cart = new PhocacartCart();
+	 *	$cart->emptyCart();
+     *  PhocacartUserGuestuser::cancelGuestUser();
+	 *
+	 * For example in following events:
+	 * - PCPafterRecievePayment
+	 * - PCPafterCancelPayment
+	 * - PCPbeforeCheckPayment
+	 * - PCPonPaymentWebhook
+	 *
+	 * If the cart is not emptied and the user re-orders,
+	 * then a new order ID is created - which is generally standard procedure
+	 */
+
+	function PCPbeforeEmptyCartAfterOrder(&$form, &$pluginData, $paramsC, $params, $order, $eventData) {
+
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
+
+		// Uncomment to not empty cart when order is placed
+		// $pluginData['emptycart'] = false;
+
+		return true;
+
+	}
+
+	/**
+	 * Payment Recieve
+	 *
+	 * @param   integer	$mid  ID of message - can be set in PCPbeforeSetPaymentForm
+	 * @param   string	$message  Custom message array set by plugin to override standard messages made by component
+	 *
+	 * @return  boolean  True
+	 */
+
+	function PCPafterRecievePayment($mid, &$message, $eventData){
+
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
+
+		// Uncomment to empty cart when PCPafterRecievePayment is reached
+		// $cart = new PhocacartCart();
+	 	// $cart->emptyCart();
+        // PhocacartUserGuestuser::cancelGuestUser();
+
+		$message = array();
+
+		return true;
+
+	}
+	
+	/*
+	function PCPbeforeShowPossiblePaymentMethod(&$active, $params, $eventData){
+
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
+
+		// Payment plugin can disable/deactivate current payment method in possible payment method list based on own rules
+		// $active = false;
+
+		return true;
+
+	}
+	
+	function PCPonInfoViewDisplayContent($data, $eventData){
+
+		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
+			return false;
+		}
+
+		$output = array();
+		$output['content'] = '';
+
+		return $output;
+
+	}
+	
+	/*
+	 * Payment plugin wants to display some information on Item View (Detail View) page
+	 * */
+	/*
+	public function PCPonItemBeforeEndPricePanel($context, &$item, &$params) {
+		//return "<div></div>";
+	}
+	*/
 }
 ?>
