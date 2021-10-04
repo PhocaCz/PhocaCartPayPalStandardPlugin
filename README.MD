@@ -60,7 +60,7 @@ Phoca Cart Payment - PayPal Standard - payment method for Phoca Cart component. 
 
 ## Version
 
-3.5.7
+3.5.8
 
 
 
