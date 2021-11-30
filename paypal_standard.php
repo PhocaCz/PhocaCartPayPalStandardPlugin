@@ -36,7 +36,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * @return  boolean  True
 	 */
 
-	function PCPbeforeProceedToPayment(&$proceed, &$message, $eventData) {
+	function onPCPbeforeProceedToPayment(&$proceed, &$message, $eventData) {
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -77,7 +77,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * @return  boolean  True
 	 */
 
-	function PCPafterCancelPayment($mid, &$message, $eventData){
+	function onPCPafterCancelPayment($mid, &$message, $eventData){
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -101,7 +101,7 @@ class plgPCPPaypal_Standard extends JPlugin
 		return true;
 	}
 
-	function PCPbeforeSetPaymentForm(&$form, $paramsC, $params, $order, $eventData) {
+	function onPCPbeforeSetPaymentForm(&$form, $paramsC, $params, $order, $eventData) {
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -209,7 +209,21 @@ class plgPCPPaypal_Standard extends JPlugin
 			$i++;
 		}
 
+		// More tax rates
+		// If there are different taxes, we need to change tax variable for PayPal
+		$countTax = 0;
+		foreach ($order['total'] as $k => $v) {
 
+			if ($v->type == 'tax') {
+				$countTax++;
+				continue;
+			} else {
+				continue;
+			}
+		}
+
+
+		$tI = 1;// More tax rates
 		foreach ($order['total'] as $k => $v) {
 			if ($v->amount != 0 || $v->amount_currency != 0) {
 
@@ -224,7 +238,13 @@ class plgPCPPaypal_Standard extends JPlugin
 					// Tax (PLUS)
 					case 'tax':
 						$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
-						$f[]	= '<input type="hidden" name="tax_cart" value="'. $price->roundPrice($v->amount * $r).'" />';
+
+						if ($countTax > 1) {
+							$f[]	= '<input type="hidden" name="tax_'.$tI.'" value="'. $price->roundPrice($v->amount * $r).'" />';
+							$tI++;
+						} else {
+							$f[]	= '<input type="hidden" name="tax_cart" value="'. $price->roundPrice($v->amount * $r).'" />';
+						}
 					break;
 
 					// Payment Method, Shipping Method (PLUS)
@@ -381,7 +401,7 @@ class plgPCPPaypal_Standard extends JPlugin
 
 	}
 
-	function PCPbeforeCheckPayment($pid, $eventData) {
+	function onPCPbeforeCheckPayment($pid, $eventData) {
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -609,7 +629,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * then a new order ID is created - which is generally standard procedure
 	 */
 
-	function PCPbeforeEmptyCartAfterOrder(&$form, &$pluginData, $paramsC, $params, $order, $eventData) {
+	function onPCPbeforeEmptyCartAfterOrder(&$form, &$pluginData, $paramsC, $params, $order, $eventData) {
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -631,7 +651,7 @@ class plgPCPPaypal_Standard extends JPlugin
 	 * @return  boolean  True
 	 */
 
-	function PCPafterRecievePayment($mid, &$message, $eventData){
+	function onPCPafterRecievePayment($mid, &$message, $eventData){
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -647,9 +667,9 @@ class plgPCPPaypal_Standard extends JPlugin
 		return true;
 
 	}
-	
+
 	/*
-	function PCPbeforeShowPossiblePaymentMethod(&$active, $params, $eventData){
+	function onPCPbeforeShowPossiblePaymentMethod(&$active, $params, $eventData){
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -661,8 +681,8 @@ class plgPCPPaypal_Standard extends JPlugin
 		return true;
 
 	}
-	
-	function PCPonInfoViewDisplayContent($data, $eventData){
+
+	function onPCPonInfoViewDisplayContent($data, $eventData){
 
 		if (!isset($eventData['pluginname']) || isset($eventData['pluginname']) && $eventData['pluginname'] != $this->name) {
 			return false;
@@ -674,12 +694,12 @@ class plgPCPPaypal_Standard extends JPlugin
 		return $output;
 
 	}
-	
+
 	/*
 	 * Payment plugin wants to display some information on Item View (Detail View) page
 	 * */
 	/*
-	public function PCPonItemBeforeEndPricePanel($context, &$item, &$params) {
+	public function onPCPonItemBeforeEndPricePanel($context, &$item, &$params) {
 		//return "<div></div>";
 	}
 	*/
