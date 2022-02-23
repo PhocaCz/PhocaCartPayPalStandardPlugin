@@ -2,7 +2,7 @@
 <extension type="plugin" group="pcp" method="upgrade" version="4.0">
 	<name>plg_pcp_paypal_standard</name>
 	<author>Jan Pavelka (www.phoca.cz)</author>
-	<creationDate>30/11/2021</creationDate>
+	<creationDate>21/02/2022</creationDate>
 	<authorEmail></authorEmail>
 	<authorUrl>https://www.phoca.cz</authorUrl>
 	<copyright>Jan Pavelka</copyright>
@@ -14,7 +14,6 @@
 	<files>
 		<folder>helpers</folder>
 		<filename plugin="paypal_standard">index.html</filename>
-		<filename plugin="paypal_standard">manifest.xml</filename>
 		<filename plugin="paypal_standard">paypal_standard.php</filename>
 	</files>
 
