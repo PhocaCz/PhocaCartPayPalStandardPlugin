@@ -8,6 +8,11 @@
  */
 
 defined('_JEXEC') or die;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+
 jimport( 'joomla.plugin.plugin' );
 jimport( 'joomla.filesystem.file');
 jimport( 'joomla.html.parameter' );
@@ -17,7 +22,7 @@ jimport( 'joomla.html.parameter' );
 
 JLoader::registerPrefix('Phocacart', JPATH_ADMINISTRATOR . '/components/com_phocacart/libraries/phocacart');
 
-class plgPCPPaypal_Standard extends JPlugin
+class plgPCPPaypal_Standard extends CMSPlugin
 {
 	protected $name 	= 'paypal_standard';
 
@@ -52,17 +57,17 @@ class plgPCPPaypal_Standard extends JPlugin
 		$message = array();
 		/*
 		// Order processed successfully made - no downloadable items
-		$message['order_nodownload'] 	= JText::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED')
-		.'</br>' . JText::_('COM_PHOCACART_ORDER_PROCESSED_ADDITIONAL_INFO');
+		$message['order_nodownload'] 	= Text::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED')
+		.'</br>' . Text::_('COM_PHOCACART_ORDER_PROCESSED_ADDITIONAL_INFO');
 		// Order processed successfully made - downloadable items
-		$message['order_download'] 		= JText::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED')
-		.'</br>' . JText::_('COM_PHOCACART_ORDER_PROCESSED_DOWNLOADABLE_ITEMS_ADDITIONAL_INFO');
+		$message['order_download'] 		= Text::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED')
+		.'</br>' . Text::_('COM_PHOCACART_ORDER_PROCESSED_DOWNLOADABLE_ITEMS_ADDITIONAL_INFO');
 		// Order and payment successfully made - no downloadable items
-		$message['payment_nodownload'] 	= JText::_('COM_PHOCACART_ORDER_AND_PAYMENT_SUCCESSFULLY_PROCESSED')
-		.'</br>' . JText::_('COM_PHOCACART_ORDER_PAYMENT_PROCESSED_ADDITIONAL_INFO');
+		$message['payment_nodownload'] 	= Text::_('COM_PHOCACART_ORDER_AND_PAYMENT_SUCCESSFULLY_PROCESSED')
+		.'</br>' . Text::_('COM_PHOCACART_ORDER_PAYMENT_PROCESSED_ADDITIONAL_INFO');
 		// Order and payment successfully made - downloadable items
-		$message['payment_download']	= JText::_('COM_PHOCACART_ORDER_AND_PAYMENT_SUCCESSFULLY_PROCESSED')
-		.'</br>' . JText::_('COM_PHOCACART_ORDER_PAYMENT_PROCESSED_DOWNLOADABLE_ITEMS_ADDITIONAL_INFO');
+		$message['payment_download']	= Text::_('COM_PHOCACART_ORDER_AND_PAYMENT_SUCCESSFULLY_PROCESSED')
+		.'</br>' . Text::_('COM_PHOCACART_ORDER_PAYMENT_PROCESSED_DOWNLOADABLE_ITEMS_ADDITIONAL_INFO');
 		*/
 
 		return true;
@@ -87,12 +92,12 @@ class plgPCPPaypal_Standard extends JPlugin
 		/*
 		switch($mid) {
 			case 1:
-				$message['payment_canceled']	= JText::_('COM_PHOCACART_PAYMENT_CANCELED')
-				.'</br>' . JText::_('COM_PHOCACART_ORDER_PAYMENT_CANCELED_ADDITIONAL_INFO');
+				$message['payment_canceled']	= Text::_('COM_PHOCACART_PAYMENT_CANCELED')
+				.'</br>' . Text::_('COM_PHOCACART_ORDER_PAYMENT_CANCELED_ADDITIONAL_INFO');
 			break;
 			default:
-				$message['payment_canceled']	= JText::_('COM_PHOCACART_PAYMENT_CANCELED')
-				.'</br>' . JText::_('COM_PHOCACART_ORDER_PAYMENT_CANCELED_ADDITIONAL_INFO');
+				$message['payment_canceled']	= Text::_('COM_PHOCACART_PAYMENT_CANCELED')
+				.'</br>' . Text::_('COM_PHOCACART_ORDER_PAYMENT_CANCELED_ADDITIONAL_INFO');
 			break;
 		}
 		*/
@@ -107,7 +112,7 @@ class plgPCPPaypal_Standard extends JPlugin
 			return false;
 		}
 
-		$document				= JFactory::getDocument();
+		$document				= Factory::getDocument();
 		$sandbox 				= $params->get('sandbox', 0);
 		$merchant_email			= $params->get('merchant_email', '');
 		$address_override		= $params->get('address_override', '');
@@ -144,7 +149,7 @@ class plgPCPPaypal_Standard extends JPlugin
 		//$invoice_number_chars	= $paramsC->get( 'invoice_number_chars', 12);
 		$invoiceNr				= PhocacartOrder::getInvoiceNumber($order['common']->id, $order['common']->date, $order['common']->invoice_number);
 		$orderNr				= PhocacartOrder::getOrderNumber($order['common']->id, $order['common']->date, $order['common']->order_number);
-		$itemName				= JText::_('COM_PHOCACART_ORDER') . ': ' . $orderNr;
+		$itemName				= Text::_('COM_PHOCACART_ORDER') . ': ' . $orderNr;
 
 		$actionLink = 'https://www.paypal.com/cgi-bin/webscr';
 		if ($sandbox == 1) {
@@ -163,9 +168,9 @@ class plgPCPPaypal_Standard extends JPlugin
 			$paymentId = 0;
 		}
 
-		$return 		= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentrecieve&type=paypal_standard&mid=1';
-		$cancel_return 	= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentcancel&type=paypal_standard&mid=1';
-		$notify_url 	= JURI::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentnotify&type=paypal_standard&pid='.(int)$paymentId.'&tmpl=component';
+		$return 		= Uri::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentrecieve&type=paypal_standard&mid=1';
+		$cancel_return 	= Uri::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentcancel&type=paypal_standard&mid=1';
+		$notify_url 	= Uri::root(false). 'index.php?option=com_phocacart&view=response&task=response.paymentnotify&type=paypal_standard&pid='.(int)$paymentId.'&tmpl=component';
 		//$payment_action = '';
 
 		$f		= array();
@@ -320,7 +325,7 @@ class plgPCPPaypal_Standard extends JPlugin
 		}
 
 		if (round($currencyAmount, 2, $rounding_calculation) > 0) {
-			$f[]	= '<input type="hidden" name="item_name_'.$i.'" value="'.JText::_('COM_PHOCACART_CURRENCY_ROUNDING').'" />';
+			$f[]	= '<input type="hidden" name="item_name_'.$i.'" value="'.Text::_('COM_PHOCACART_CURRENCY_ROUNDING').'" />';
 			$f[]	= '<input type="hidden" name="amount_'.$i.'" value="'. round($currencyAmount, 2, $rounding_calculation).'" />';
 			$f[]	= '<input type="hidden" name="quantity_'.$i.'" value="1" />';
 			$i++;
@@ -369,13 +374,13 @@ class plgPCPPaypal_Standard extends JPlugin
 		//$f[]	= '<input type="hidden" name="paymentaction" value="'.$payment_action.'" />';// sale
 
 		$f[]	= '<div class="ph-center">';
-		$f[]	= '<div>'.JText::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED').'</div>';
-		$f[]	= '<div>'.JText::_('PLG_PCP_PAYPAL_STANDARD_YOU_ARE_NOW_BEING_REDIRECTED_TO_PAYPAL').'</div>';
+		$f[]	= '<div>'.Text::_('COM_PHOCACART_ORDER_SUCCESSFULLY_PROCESSED').'</div>';
+		$f[]	= '<div>'.Text::_('PLG_PCP_PAYPAL_STANDARD_YOU_ARE_NOW_BEING_REDIRECTED_TO_PAYPAL').'</div>';
 
 		$f[]	= '<div class="ph-loader"></div>';
 
-		$f[]	= '<div>'.JText::_('PLG_PCP_PAYPAL_STANDARD_IF_YOU_ARE_NOT_REDIRECTED_WITHIN_A_FEW_SECONDS_PLEASE').' ';
-		$f[]	= '<input type="submit" class="btn btn-primary" value="'.JText::_('PLG_PCP_PAYPAL_CLICK_HERE_TO_BE_REDIRECTED_TO_PAYPAL').'" class="button" />';
+		$f[]	= '<div>'.Text::_('PLG_PCP_PAYPAL_STANDARD_IF_YOU_ARE_NOT_REDIRECTED_WITHIN_A_FEW_SECONDS_PLEASE').' ';
+		$f[]	= '<input type="submit" class="btn btn-primary" value="'.Text::_('PLG_PCP_PAYPAL_CLICK_HERE_TO_BE_REDIRECTED_TO_PAYPAL').'" class="button" />';
 		$f[]	= '</div>';
 		$f[]	= '</div>';
 
@@ -412,7 +417,7 @@ class plgPCPPaypal_Standard extends JPlugin
 			require_once( JPATH_SITE.'/plugins/pcp/paypal_standard/helpers/ipnlistener.php');
 		}
 
-		$app		= JFactory::getApplication();
+		$app		= Factory::getApplication();
 		$verified 	= false;
 		$listener 	= new PhocacartPaypalStandardIpnListener();
 
@@ -570,13 +575,13 @@ class plgPCPPaypal_Standard extends JPlugin
 
 
 
-								$comment	= JText::_('COM_PHOCACART_ORDER_STATUS_CHANGED_BY_PAYMENT_SERVICE_PROVIDER') . '(Paypal Standard)';
+								$comment	= Text::_('COM_PHOCACART_ORDER_STATUS_CHANGED_BY_PAYMENT_SERVICE_PROVIDER') . '(Paypal Standard)';
 
-								$comment .= "\n" . JText::_('COM_PHOCACART_INFORMATION');
-								$comment .= "\n". JText::_('COM_PHOCACART_PAYMENT_ID'). ': '. $txnId;
-								$comment .= "\n". JText::_('COM_PHOCACART_PAYMENT_AMOUNT'). ': '. $mcGross;
-								$comment .= "\n". JText::_('COM_PHOCACART_PAYMENT_FEE'). ': '. $mcFee;
-								$comment .= "\n". JText::_('COM_PHOCACART_PAYMENT_STATUS'). ': '. $paymentStatus;
+								$comment .= "\n" . Text::_('COM_PHOCACART_INFORMATION');
+								$comment .= "\n". Text::_('COM_PHOCACART_PAYMENT_ID'). ': '. $txnId;
+								$comment .= "\n". Text::_('COM_PHOCACART_PAYMENT_AMOUNT'). ': '. $mcGross;
+								$comment .= "\n". Text::_('COM_PHOCACART_PAYMENT_FEE'). ': '. $mcFee;
+								$comment .= "\n". Text::_('COM_PHOCACART_PAYMENT_STATUS'). ': '. $paymentStatus;
 								// Add status history
 								PhocacartOrderStatus::setHistory((int)$id, (int)$statusOption, (int)$notify, $comment);
 
