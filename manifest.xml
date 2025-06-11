@@ -26,12 +26,11 @@
 		<element>paypal_standard</element>
 		<folder>pcp</folder>
 		<type>plugin</type>
-		<version>4.0.9</version>
-		<infourl title="Phoca Cart PayPal Standard Plugin 4.0.9">https://www.phoca.cz/</infourl>
+		<version>4.0.11</version>
+		<infourl title="Phoca Cart PayPal Standard Plugin 4.0.11">https://www.phoca.cz/</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/releases/download/4.0.9/plg_pcp_paypal_standard_v4.0.9.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/releases/download/4.0.11/plg_pcp_paypal_standard_v4.0.11.zip</downloadurl>
 		</downloads>
-		<sha512>6a8106269167d06a874188ac81dfd361a98c09e6ea8c616e8f29c17a64abc16348e9db5444fbcc332940e69f87b5dc6a4e745bbd312da4e696720764053eff33</sha512>
 		<tags>
 			<tag>stable</tag>
 		</tags>
@@ -41,5 +40,25 @@
 		<targetplatform name="joomla" version="4\.*"/>
 		<client>site</client>
 	</update>
-
+	<update>
+		<name><![CDATA[ Phoca Cart PayPal Standard Plugin ]]></name>
+		<description><![CDATA[ Phoca Cart Payment - PayPal Standard - payment method for Phoca Cart component. This plugin is included in core Phoca Cart package. ]]></description>
+		<element>paypal_standard</element>
+		<folder>pcp</folder>
+		<type>plugin</type>
+		<version>5.1.1</version>
+		<infourl title="Phoca Cart PayPal Standard Plugin 5.1.1">https://www.phoca.cz/</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/PhocaCz/PhocaCartPayPalStandardPlugin/releases/download/5.1.1/plg_pcp_paypal_standard_v5.1.1.zip</downloadurl>
+		</downloads>
+		<sha512>268ea65bfcaa4c681fabc6fd9ab9a846c7af33cf8ef8567df04b17f2d436df6ca4f63fc7403f6103a4a3f19d809abc9257582154f7437915b5ae38dd851a330a</sha512>
+		<tags>
+			<tag>stable</tag>
+		</tags>
+		<maintainer><![CDATA[ Phoca.cz ]]></maintainer>
+		<maintainerurl>https://www.phoca.cz/</maintainerurl>
+		<section>Updates</section>
+		<targetplatform name="joomla" version="5\.*"/>
+		<client>site</client>
+	</update>
 </updates>

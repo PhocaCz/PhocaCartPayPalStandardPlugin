@@ -120,6 +120,11 @@ class plgPCPPaypal_Standard extends CMSPlugin
 
 		$paramsC 				= PhocacartUtils::getComponentParameters();
 		$rounding_calculation	= $paramsC->get( 'rounding_calculation', 1 );
+
+		// Since 5.0.0 - there can be discount (product discount, cart discount, coupon) from brutto amount (discount from amount which includes tax, see below)
+		$tax_calculation_sales	 			= $paramsC->get( 'tax_calculation_sales', 1);
+		$tax_calculation_sales_change_subtotal = $paramsC->get( 'tax_calculation_sales_change_subtotal', 0);
+
 		$price					= new PhocacartPrice();
 
 
@@ -199,7 +204,30 @@ class plgPCPPaypal_Standard extends CMSPlugin
 
 			$f[]	= '<input type="hidden" name="item_name_'.$i.'" value="'.$v->title.'" />';
 			$f[]	= '<input type="hidden" name="item_number_'.$i.'" value="'.$v->sku.'" />';
-			$f[]	= '<input type="hidden" name="amount_'.$i.'" value="'.$price->roundPrice($v->netto * $r).'" />';
+
+			// Since 5.0.0 - there can be discount (product discount, cart discount, coupon) from brutto amount
+			if ($tax_calculation_sales == 2) {
+				$f[]	= '<input type="hidden" name="amount_'.$i.'" value="'.$price->roundPrice($v->brutto * $r).'" />';
+
+				// POSSIBLE CUSTOMIZATION *** a) don't send tax, b) send tax
+				// a) we subtract the discount from brutto - so we don't set any tax to paypal, e.g. 120 - 80 (discount) = 40
+				// b) or it can be customized - so we send the tax but because of paypal calculation, we need to subtract this tax from brutto
+				/* UNCOMMENT
+				$bruttoPrice = $price->roundPrice($v->brutto * $r);
+				$lastDiscountTax = 0;
+				if (!empty($order['productdiscounts'][$v->product_id_key])) {
+					foreach($order['productdiscounts'][$v->product_id_key] as $k3 => $v3) {
+						$lastDiscountTax = $price->roundPrice($v3->tax * $r);
+
+					}
+				}
+				$f[]	= '<input type="hidden" name="amount_'.$i.'" value="'.$bruttoPrice - $lastDiscountTax.'" />';
+				*/
+
+			} else {
+				$f[]	= '<input type="hidden" name="amount_'.$i.'" value="'.$price->roundPrice($v->netto * $r).'" />';
+			}
+
 			$f[]	= '<input type="hidden" name="quantity_'.$i.'" value="'.$v->quantity.'" />';
 			$f[]	= '<input type="hidden" name="weight_'.$i.'" value="'.$v->weight.'" />';
 
@@ -229,26 +257,74 @@ class plgPCPPaypal_Standard extends CMSPlugin
 
 
 		$tI = 1;// More tax rates
+		$taxSum = 0;// in case PayPal does not recognize more tax rates
 		foreach ($order['total'] as $k => $v) {
 			if ($v->amount != 0 || $v->amount_currency != 0) {
 
 				switch($v->type) {
 
 					// All discounts (MINUS)
+
+					// Since 5.0.0 - there can be discount (product discount, cart discount, coupon) from brutto amount
+					case 'dnetto':
+					case 'dbrutto':
+
+						if ($tax_calculation_sales == 2) {
+							if ($v->type == 'dbrutto'){
+								//$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
+
+								$discountAmount 	+= $price->roundPrice(abs($v->amount * $r));
+
+							}
+							if ($v->type == 'dnetto'){
+								$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
+								//$discountAmount 	+= $price->roundPrice(abs($v->amount * $r));
+							}
+
+						} else {
+							if ($v->type == 'dnetto'){
+								$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
+								$discountAmount 	+= $price->roundPrice(abs($v->amount * $r));
+							}
+						}
+					break;
+
+					// Old 4.x code
+					/*
 					case 'dnetto':
 						$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
 						$discountAmount 	+= $price->roundPrice(abs($v->amount * $r));
 					break;
+					*/
+
 
 					// Tax (PLUS)
 					case 'tax':
 						$paymentBrutto 		+= $price->roundPrice($v->amount * $r);
 
-						if ($countTax > 1) {
-							$f[]	= '<input type="hidden" name="tax_'.$tI.'" value="'. $price->roundPrice($v->amount * $r).'" />';
-							$tI++;
+						// Since 5.0.0 - there can be discount (product discount, cart discount, coupon) from brutto amount
+						if ($tax_calculation_sales == 2) {
+							// Don't send tax to PayPal in case we subtract discounts from brutto - from amount with tax
+							// PayPal calculation is different: items + tax which cannot be used when we get discounts from brutto
+							//
+							// Can be customized - in $order['product_discounts] - see line cca 210 $price->roundPrice($v->brutto * $r)
+							// POSSIBLE CUSTOMIZATION *** a) don't send tax, b) send tax
+
+							/* UNCOMMENT
+								$taxSum = $taxSum + $price->roundPrice($v->amount * $r);
+								//$f['tax'] = '<input type="hidden" name="tax_cart" value="' . $price->roundPrice($v->amount * $r) . '" />';
+								$f['tax'] = '<input type="hidden" name="tax_cart" value="' . $taxSum . '" />';
+							*/
 						} else {
-							$f[]	= '<input type="hidden" name="tax_cart" value="'. $price->roundPrice($v->amount * $r).'" />';
+							// PayPal does not count discount_amount_cart in case of more taxes, so we send only tax amount
+							if ($countTax > 1 && $discountAmount == 0) {
+								$f[] = '<input type="hidden" name="tax_' . $tI . '" value="' . $price->roundPrice($v->amount * $r) . '" />';
+								$tI++;
+							} else {
+								$taxSum = $taxSum + $price->roundPrice($v->amount * $r);
+								//$f[] = '<input type="hidden" name="tax_cart" value="' . $price->roundPrice($v->amount * $r) . '" />';
+								$f['tax'] = '<input type="hidden" name="tax_cart" value="' . $taxSum . '" />';
+							}
 						}
 					break;
 
@@ -321,6 +397,7 @@ class plgPCPPaypal_Standard extends CMSPlugin
 		$discountAmount = $price->roundPrice($discountAmount);
 
 		if (round($discountAmount, 2, $rounding_calculation) > 0) {
+			// Ignored by PayPal if tax for items is used
 			$f[]	= '<input type="hidden" name="discount_amount_cart" value="'.round($discountAmount, 2, $rounding_calculation).'" />';
 		}
 
@@ -389,8 +466,6 @@ class plgPCPPaypal_Standard extends CMSPlugin
 
 		$form	= implode("\n", $f);
 
-
-
 		$js		= 'window.onload=function(){' . "\n"
 				 .'   window.setTimeout(document.phCartPayment.submit.bind(document.phCartPayment), 1100);'. "\n"
 				 .'};'. "\n";
@@ -400,7 +475,8 @@ class plgPCPPaypal_Standard extends CMSPlugin
 		/*$form2 = str_replace('<', '&lt;', $form);
 		$form2 = str_replace('>', '&gt;', $form2);
 		$form2 = '<pre><code>'.$form2.'</code></pre>';
-		echo $form2;*/
+		echo $form2;
+		exit;*/
 		PhocacartLog::add(1, 'Payment - PayPal Standard - SENDING FORM TO PAYPAL', (int)$order['common']->id, $form);
 		return true;
 
@@ -672,7 +748,26 @@ class plgPCPPaypal_Standard extends CMSPlugin
 		return true;
 
 	}
+/*
+	public function onPCPbeforeSaveOrderAdmin($context, $table, $isNew, &$data) {
 
+		if ($context == 'com_phocacart.order.status') {
+			// Before save in edit status view (admin)
+			// (change comment in order history table)
+			if ($data['comment_history'] != '') {
+				$data['comment_history'] .= ' ';
+			}
+			$data['comment_history'] .= 'Comment in order history table changed by payment plugin';
+			return true;
+
+
+		} else if ($context == 'com_phocacart.order') {
+			// Before save in order edit view (admin)
+		} else {
+			return true;
+		}
+	}
+*/
 	/*
 	function onPCPbeforeShowPossiblePaymentMethod(&$active, $params, $eventData){
 
